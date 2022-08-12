@@ -1,0 +1,19 @@
+[
+	
+		{
+			"name": "mouse",
+			"precio": "500",
+			"color": "blue",
+			"image": "1659986570884-favicon.ico",
+			"id": 2,
+			"isAdopted": false
+		},
+		{
+			"name": "notebook",
+			"precio": "1000",
+			"color": "blue",
+			"image": "1659986570884-favicon.ico",
+			"id": 3,
+			"isAdopted": false
+		}
+]
