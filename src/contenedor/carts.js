@@ -23,11 +23,11 @@ class cartContenedor{
         }
   }
 
-    Cartsave = async (article) =>{
+    Cartsave = async (article,timestamp) =>{
         try{
             let products = await this.getAll();
             if(products.length === 0){
-                let timestamp = Date.now();
+                timestamp = Date.now();
                 let day = new Date(timestamp); 
                 article.id = 1;
                 products.push(article);

@@ -2,9 +2,10 @@ import {Router} from "express";
 import { uploader } from "../utils.js";
 import objectContenedor from "../contenedor/object.js";
 // import carts from "../files/carts.json.js";
-import fs from 'fs';
 import __dirname from '../utils.js';
 import cartContenedor from "../contenedor/carts.js";
+const isAdmin = true;
+
 
 const router = Router();
 const objectService = new objectContenedor();
@@ -72,6 +73,110 @@ router.delete('/:id/products', async (req,res)=>{
 })
 
 
+//POST Para incorporar productos al listado (solo administradores)
+router.post('/', async (req,res)=>{
+    if(isAdmin){
+        if(!res.body){
+            const name = req.body.name;
+            const image = req.body.image;
+            const color = req.body.color;
+            try{
+                objectService.save(name,image,color);
+                res.json({
+                    desc: `Producto creado exitosamente`,
+                    status: `200 OK`  
+                });
+            }catch(ex){
+                console.log(ex);
+            }
+        }else{
+            res.json(
+                { 
+                  error: `403 Forbidden`, 
+                  desc: `POST reservado para admins` ,
+                  status : 403
+                });
+        }
+    }
+})
+
+//PUT '/:id' Actualiza producto por id solo para administradores
+
+router.put('/:id', async (req,res)=>{
+    if(isAdmin){
+        if(!(res.body)){
+            const id = parseInt(req.params.id);
+            const name = req.body.name;
+            const image = req.body.image;
+            const color = req.body.color;
+
+            try{
+                const update = await objectService.actualizar(id,name,color,image);
+                update ? res.json(
+                    {
+                      desc: `Producto modificado exitosamente`,
+                      status:`200 OK`
+                    }
+                  ) : res.json(
+                    {
+                      error: `404 Not Found`, 
+                      desc: `No encontramos el producto a modificar`,
+                      status : 404
+                    });
+            } catch (ex) {
+                console.error(ex);
+              }
+        }else{
+            res.json(
+                      { 
+                        error: `412 Precondition Failed`, 
+                        desc: `POST requiere campos : Nombre , Descripcion, Foto y precio` ,
+                        status: 412
+                      });
+          }      
+        } else {
+          res.json(
+                    {
+                      error: `403 Forbidden`, 
+                      desc: `PUT reservado para admins` ,
+                      status : 403
+                    });
+    }
+})
+
+
+//DELETE '/:id' Borra un producto segun su id solo admnistradores
+router.delete('/:id',async (req,res)=>{
+    if(isAdmin){
+        try{
+            const isDeleted = await objectService.deleteById(req.params.id);
+            isDeleted ? res.json(
+                {
+                  desc: `Producto eliminado exitosamente`, 
+                  status: `200 OK`
+                }) : 
+                res.json(
+                  {
+                    error: 404, 
+                    desc: `No encontramos el producto que busca eliminar...`,
+                    status :404
+                  });
+        }catch (ex){
+                console.log(ex);
+
+        }
+    }else{
+        res.json(
+            {
+              error: `403 Forbidden`, 
+              desc: `DELETE reservado para admins` ,
+              status: 403
+
+            });
+    }
+    
+})
+
 
 
 //Carrito
@@ -79,7 +184,6 @@ router.delete('/:id/products', async (req,res)=>{
    router.post('/:id/carts',async (req,res)=>{
     let body = req.body;
     await cartService.save(body); 
-
     console.log(id)
     res.send(id);
 })   
