@@ -1,18 +1,8 @@
 [
 	{
-		"name": "notebook",
-		"precio": "1000",
+		"name": "Iphone 12",
+		"Precio": "1000",
 		"color": "blue",
-		"image": "1659986570884-favicon.ico",
-		"id": 3,
-		"isAdopted": false
-	},
-	{
-		"name": "notebook",
-		"precio": "1000",
-		"color": "blue",
-		"image": "1659986570884-favicon.ico",
-		"id": 4,
-		"isAdopted": false
+		"id": 1
 	}
 ]

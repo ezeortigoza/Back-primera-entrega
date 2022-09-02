@@ -2,6 +2,7 @@ import fs from 'fs';
 import __dirname from '../utils.js'
 
 
+
 const path = __dirname+'/files/object.json'
 
 class objectContenedor{//class contenedora

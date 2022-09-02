@@ -4,6 +4,7 @@ import objectContenedor from "../contenedor/object.js";
 // import carts from "../files/carts.json.js";
 import __dirname from '../utils.js';
 import cartContenedor from "../contenedor/carts.js";
+import services from "../dao/index.js";
 const isAdmin = true;
 
 
@@ -11,6 +12,45 @@ const router = Router();
 const objectService = new objectContenedor();
 let path = __dirname+'/files/carts.json.js'
 const cartService = new cartContenedor();
+
+//DAO MEMORY, FILE y MongoDB
+router.get('/users/:id',async(req,res)=>{
+  let id = req.params.id;
+  let results = await services.usersService.deleteById(id);
+  res.send(results);
+})
+router.get('/users',async(req,res)=>{
+  let results = await services.usersService.getAll();
+  res.send(results);
+})
+router.get('/users',async(req,res)=>{
+  let results = await services.usersService.getById();
+  res.send(results);
+})
+router.delete('/users/:id',async(req,res)=>{
+  let id = req.params.id;
+  let results = await services.usersService.deleteById(id);
+  console.log(results)
+  res.send(results)
+})
+router.post('/users',async(req,res)=>{
+  let results = await services.usersService.save(req.body);
+  res.send(results);
+})
+router.post('/usersCarts',async(req,res)=>{
+  let results = await services.cartsService.Cartsave(req.body);
+  res.send(results);
+})
+router.post('/usersCartsDB',async(req,res)=>{
+  let results = await services.cartsService.save(req.body);
+  res.send(results);
+})
+router.get('/usersDB',async(req,res)=>{
+  let results = await services.cartsService.getAll();
+  res.send(results);
+})
+
+
 
 
 //Obtiene todos los productos
@@ -56,7 +96,7 @@ router.post('/',uploader.single('file'), async (req,res)=>{
 
 //Recibe y actualiza un producto segun su ID
 router.put('/:id', async (req,res)=>{
-     let id = req.params.id
+     let id = req.params.body
      let producto = await objectService.actualizar(id);
      console.log(producto);
      res.send(producto);
@@ -74,7 +114,7 @@ router.delete('/:id/products', async (req,res)=>{
 
 
 //POST Para incorporar productos al listado (solo administradores)
-router.post('/', async (req,res)=>{
+router.post('/admin', async (req,res)=>{
     if(isAdmin){
         if(!res.body){
             const name = req.body.name;
@@ -89,20 +129,20 @@ router.post('/', async (req,res)=>{
             }catch(ex){
                 console.log(ex);
             }
-        }else{
-            res.json(
-                { 
-                  error: `403 Forbidden`, 
-                  desc: `POST reservado para admins` ,
-                  status : 403
-                });
         }
+        }else{
+          res.json(
+              { 
+                error: `403 Forbidden`, 
+                desc: `POST reservado para admins` ,
+                status : 403
+              });
     }
 })
 
 //PUT '/:id' Actualiza producto por id solo para administradores
 
-router.put('/:id', async (req,res)=>{
+router.put('/admin/:id', async (req,res)=>{
     if(isAdmin){
         if(!(res.body)){
             const id = parseInt(req.params.id);
@@ -183,7 +223,7 @@ router.delete('/:id',async (req,res)=>{
 
    router.post('/:id/carts',async (req,res)=>{
     let body = req.body;
-    await cartService.save(body); 
+    let id = await cartService.save(body); 
     console.log(id)
     res.send(id);
 })   

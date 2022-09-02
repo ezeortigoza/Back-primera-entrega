@@ -1,8 +1,11 @@
+import { timeStamp } from 'console';
 import fs from 'fs';
+import moment from 'moment';
 import __dirname from '../utils.js'
 
-
+const moments = moment().format('YYY-MM-DD HH:mm:ss');
 let path = __dirname+'/files/carts.json'
+
 
 class cartContenedor{
 
@@ -23,15 +26,14 @@ class cartContenedor{
         }
   }
 
-    Cartsave = async (article,timestamp) =>{
+    Cartsave = async (article) =>{
         try{
             let products = await this.getAll();
             if(products.length === 0){
-                timestamp = Date.now();
-                let day = new Date(timestamp); 
                 article.id = 1;
                 products.push(article);
-                products.push(day);
+                let timeStamp = moments;
+                products.push(timeStamp);
                 await fs.promises.writeFile(path,JSON.stringify(products,null,'\t'));
             }else{//Cuando hay mas mascotas
                 article.id = products[products.length-1].id+1;
